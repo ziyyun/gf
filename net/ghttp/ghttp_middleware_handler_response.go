@@ -50,7 +50,6 @@ func MiddlewareHandlerResponse(r *Request) {
 	}
 
 	var (
-		msg  string
 		err  = r.GetError()
 		res  = r.GetHandlerResponse()
 		code = gerror.Code(err)
@@ -59,7 +58,6 @@ func MiddlewareHandlerResponse(r *Request) {
 		if code == gcode.CodeNil {
 			code = gcode.CodeInternalError
 		}
-		msg = err.Error()
 	} else {
 		if r.Response.Status > 0 && r.Response.Status != http.StatusOK {
 			switch r.Response.Status {
@@ -71,17 +69,16 @@ func MiddlewareHandlerResponse(r *Request) {
 				code = gcode.CodeUnknown
 			}
 			// It creates an error as it can be retrieved by other middlewares.
-			err = gerror.NewCode(code, msg)
+			err = gerror.NewCode(code, "")
 			r.SetError(err)
 		} else {
 			code = gcode.CodeOK
 		}
-		msg = code.Message()
 	}
 
 	r.Response.WriteJson(DefaultHandlerResponse{
 		Code:    code.Code(),
-		Message: msg,
+		Message: code.Message(),
 		Data:    res,
 	})
 }
