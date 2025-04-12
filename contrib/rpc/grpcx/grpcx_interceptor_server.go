@@ -46,7 +46,8 @@ func (s modServer) UnaryError(
 	if err != nil {
 		code := gerror.Code(err)
 		if code.Code() != -1 {
-			err = status.Error(codes.Code(code.Code()), err.Error())
+			// Convert custom error to grpc error.
+			err = status.Error(codes.Code(code.Code()), code.Message())
 		}
 	}
 	return res, err

@@ -27,7 +27,7 @@ func (c modClient) UnaryError(ctx context.Context, method string, req, reply int
 		grpcStatus, ok := status.FromError(err)
 		if ok {
 			if code := grpcStatus.Code(); code != 0 {
-				return gerror.NewCode(gcode.New(int(code), "", nil), grpcStatus.Message())
+				return gerror.NewCode(gcode.New(int(code), grpcStatus.Message(), nil), grpcStatus.Message())
 			}
 			return gerror.New(grpcStatus.Message())
 		}
